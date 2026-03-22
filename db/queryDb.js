@@ -7,8 +7,8 @@ async function getAllAssets() {
       SELECT 
         a.*,
         COALESCE(
-          array_agg(c.name) FILTER (WHERE c.name IS NOT NULL),
-          '{}'
+          JSON_AGG(c.name) FILTER (WHERE c.name IS NOT NULL),
+          '[]'::json
         ) AS tags
       FROM assets a
       LEFT JOIN asset_collections ac ON a.id = ac.asset_id
@@ -24,9 +24,9 @@ async function getAllAssets() {
     }
     throw err;
   }
-}
+};
 
-async function getAllTags() {
+async function getAllCollections() {
   try {
     const { rows } = await pool.query("SELECT * FROM collections");
     return rows;
@@ -38,14 +38,20 @@ async function getAllTags() {
   }
 };
 
-//user will be required to upload a file or point to existing url
-//later make size input
-// async function insertAsset(username, message) { 
-//   await pool.query("INSERT INTO logs (username, message) VALUES ($1, $2)",
-//   [username, message]);
-// };
+async function getAllConnections() {
+  try {
+    const { rows } = await pool.query("SELECT * FROM asset_collections");
+    return rows;
+  } catch (err) {
+    if (err.code === "42P01") {
+      return [];
+    }
+    throw err;
+  }
+};
 
 module.exports = {
   getAllAssets,
-  getAllTags
+  getAllCollections,
+  getAllConnections
 };

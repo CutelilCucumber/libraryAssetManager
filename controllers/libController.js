@@ -2,15 +2,11 @@ const db = require("../db/queryDb");
 
 async function getAllAssets(req, res) {
     const assets = await db.getAllAssets();
-    res.render("index", { table: assets });
-};
-
-async function getAllTags(req, res) {
-    const tags = await db.getAllTags();
-    res.render("index", { table: tags });
+    const collections = await db.getAllCollections();
+    const connects = await db.getAllConnections();
+    res.render("index", { assets: assets, collections: collections, connects : connects });
 };
 
 module.exports = {
-  getAllAssets,
-  getAllTags,
+  getAllAssets
 };

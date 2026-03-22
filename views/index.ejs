@@ -12,13 +12,13 @@
     <main id="main" class="container">
       <h1>Assets</h1>
 
-      <% if (table.length === 0) { %>
+      <% if (assets.length === 0) { %>
         <p class="empty-state">Nothing here yet.</p>
       <% } %>
 
       <section class="log-list" aria-live="polite">
-        <% table.forEach((table) => { %>
-          <%- include('./partials/asset', { table: table }) %>
+        <% assets.forEach((asset) => { %>
+          <%- include('./partials/asset', { asset: asset }) %>
         <% }) %>
       </section>
     </main>
