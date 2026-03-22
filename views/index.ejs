@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Asset Manager<</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('./partials/navbar') %>
+
+    <main id="main" class="container">
+      <h1>Assets</h1>
+
+      <% if (table.length === 0) { %>
+        <p class="empty-state">Nothing here yet.</p>
+      <% } %>
+
+      <section class="log-list" aria-live="polite">
+        <% table.forEach((table) => { %>
+          <%- include('./partials/asset', { table: table }) %>
+        <% }) %>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+<article class="log" tabindex="0">
+  <header class="log-header">
+    <span class="name"><%= table.name %></span>
+    <time class="time" datetime="<%= table.created %>">
+      <%= new Date(table.posted).toLocaleString() %>
+    </time>
+  </header>
+  <div class="asset-info">
+    <img class="preview" src=<%= "./"+table.file_path %> alt="asset preview">
+    <p class="text">Size: <%= table.file_size %> bytes</p>
+    <p class="text">Type: <%= table.type %></p>
+  </div>
+  <div class="asset-tags">
+    <%= table.tags %>
+    
+  </div>
+  
+</article>
