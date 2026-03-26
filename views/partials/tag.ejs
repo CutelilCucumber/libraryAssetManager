@@ -9,5 +9,5 @@
   const href = '/?' + params.toString();
 %>
 <a href="<%= href %>" class="tag <%= isActive ? 'tag--active' : '' %>">
-  <p class="tag_text"><%= tag %></p>
+  <p class="tag_text"><%= tag.toUpperCase() %></p>
 </a>

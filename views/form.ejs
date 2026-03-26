@@ -10,8 +10,94 @@
     <%- include('./partials/navbar') %>
 
     <main id="main" class="container">
-      <h1>New Asset</h1>
+      <%- include('./partials/error') %>
+      <h1>Add to Collection</h1>
+
+      <form method="POST" action="/single" class="form">
+        <h2 class="form-title">Single Asset</h2>
+        <div class="form-group">
+          <label class="path_input">
+            Enter file path: 
+            <input type="text" 
+              class="form-input"
+              name="filePath" 
+              id="filePath" 
+              required 
+              aria-required="true">
+            </label>
+            <p class="tooltip">Ie. /home/gldneye/Images/Assets/Landscape/Scenery/Mountain.png</p>
+          </div>
+          <div class="form-group">
+          <label class="path_input">
+            Select asset type: 
+            <select name="fileType" id="fileType">
+              <option value="feature">Map Feature</option>
+              <option value="token">Character Token</option>
+              <option value="other">Other</option>
+            </select>
+            </label>
+          </div>
+        <div class="form-group">
+          <label class="path_input">
+            Add new tags: 
+            <input type="text" 
+              class="form-input"
+              name="newTags" 
+              id="newTags">
+            </label>
+            <p class="tooltip">Seperate multiple tags with a space.</p>
+          </div>
       
+       <div class="form-group">
+        <span>Add existing tags:</span>
+        <div class="tag-box">
+      <% collections.forEach(collection => { %>
+        <label class="tag">
+          <input type="checkbox" name="existingTags" 
+          value="<%= collection.name %>" 
+          style="display: none;" 
+          tabindex="0"/>
+          <p class="tag_text"><%= collection.name %></p>
+        </label>
+      <% }) %>
+        </div>
+      </div>
+      <button type="submit" class="btn">Submit</button>
+      </form>
+
+      <form method="POST" action="/multiple" class="form">
+        <h2 class="form-title">Collection Loader</h2>
+        <p class="tooltip">The loader accepts a directory path, recursively walks every subfolder, and registers each folder as a tag in the database. Any image files it finds along the way are saved as assets and automatically tagged with every folder they are nested inside (Ie. anything inside Assets/Nature/Trees/ would receive the tags Assets, Nature, and Trees) Re-running it on the same directory is safe since it skips assets and collections that already exist.</p>
+        <div class="form-group">
+          <label class="path_input">
+            Enter folder path: 
+            <input type="text" 
+              class="form-input"
+              name="dirPath" 
+              id="dirPath" 
+              required 
+              aria-required="true">
+            </label>
+            <p class="tooltip">Ie. /home/gldneye/Images/Assets/Landscape</p>
+          </div>
+          <label class="path_input">
+            Select asset types: 
+            <select name="fileType" id="fileType">
+              <option value="feature">Map Feature</option>
+              <option value="token">Character Token</option>
+              <option value="other">Other</option>
+            </select>
+            </label>
+          <button type="submit" class="btn">Submit</button>
+          </form>
     </main>
   </body>
+
+  <script>
+  document.querySelectorAll('.tag input[type="checkbox"]').forEach(input => {
+    input.addEventListener('change', () => {
+      input.closest('.tag').classList.toggle('tag--active', input.checked);
+    });
+  });
+</script>
 </html>

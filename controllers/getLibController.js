@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const db = require('../db/queryDb');
+const { error } = require('console');
 
 async function getAllAssets(req, res) {
   const rawAssets = await db.getAllAssets();
@@ -25,18 +26,23 @@ async function getAllAssets(req, res) {
     );
   }
 
+  const results = (req.query.inserted !== undefined) ? {
+  inserted: parseInt(req.query.inserted),
+  skipped: parseInt(req.query.skipped)
+} : null;
+
   res.render("index", { 
     assets, 
     collections,
     activeTags, 
-    currentSearch });
+    currentSearch,
+    results});
 };
 
 async function getAllTags(req, res) {
   const collections = await db.getAllCollections();
 
-  res.render("form", { 
-    collections });
+  res.render("form", { collections });
 };
 
 async function serveAsset(req, res) {
@@ -48,4 +54,8 @@ async function serveAsset(req, res) {
   res.sendFile(asset.file_path);
 }
 
-module.exports = { getAllAssets, getAllTags, serveAsset };
+module.exports = { 
+  getAllAssets, 
+  getAllTags, 
+  serveAsset
+};

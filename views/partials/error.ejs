@@ -1,0 +1,14 @@
+<% if (typeof error !== 'undefined' && error) { %>
+<div class="error-banner">
+  <svg class="error-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/>
+    <path d="M8 4.5v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    <circle cx="8" cy="11" r="0.75" fill="currentColor"/>
+  </svg>
+  <div class="error-body">
+    <p class="error-title">Something went wrong</p>
+    <p class="error-message"><%= error %></p>
+  </div>
+  <button class="error-dismiss" onclick="this.closest('.error-banner').remove()">×</button>
+</div>
+<% } %>
