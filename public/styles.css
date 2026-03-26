@@ -56,6 +56,7 @@ body {
 .log-list {
   display: grid;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
 .log {
@@ -137,4 +138,114 @@ textarea:focus {
 .empty-state {
   color: #555;
   font-style: italic;
+}
+
+/* Tags */
+.tag {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    height: 28px;
+    padding: 0 12px 0 18px;
+    background: #B5D4F4;
+    border-radius: 0 5px 5px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #0C447C;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+    clip-path: polygon(14px 0%, 100% 0%, 100% 100%, 14px 100%, 0% 50%);
+  }
+
+  .tag::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    transition: background 0.15s ease;
+    z-index: 1;
+  }
+
+  .tag_text {
+    padding-left: 8px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  .tag:hover {
+    background: #85B7EB;
+    transform: translateX(2px) rotate(.01turn);
+  }
+
+  .tag:active {
+    transform: translateX(2px) rotate(.01turn) scale(0.97);
+  }
+
+  .tag--active {
+    transform: translateX(2px) rotate(.01turn) scale(0.97);
+    background: #85B7EB;
+  }
+
+  .tag--active:hover {
+    background: #c9dbee;
+    transform: translateX(-2px) rotate(0);
+  }
+
+  /* search bar */
+
+  .search {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.search__input {
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid #ddd;
+  color: #767676;
+  padding: 5px 10px;
+  border-radius: 8px;
+  margin-right: -1.5rem;
+  height: 30px;
+  width: 16rem;
+}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 400;
+  color: #767676;
+  font-size: 14px;
+}
+
+.search__button {
+  border: none;
+  background-color: #fff;
+  margin-top: 0.1em;
+  padding: 0;
+  overflow: hidden;
+}
+
+.search__button:hover {
+  cursor: pointer;
+}
+
+.search input:focus {
+  outline: 2px solid #2563eb;
+  color: rgb(39, 39, 39);
+}
+
+.tag-box {
+  margin-top: .2em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .2em;
 }

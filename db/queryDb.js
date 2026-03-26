@@ -50,8 +50,14 @@ async function getAllConnections() {
   }
 };
 
+async function getAssetById(id) {
+  const { rows } = await pool.query('SELECT * FROM assets WHERE id = $1', [id]);
+  return rows[0] || null;
+}
+
 module.exports = {
   getAllAssets,
   getAllCollections,
-  getAllConnections
+  getAllConnections,
+  getAssetById
 };

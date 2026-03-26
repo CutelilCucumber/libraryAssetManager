@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Asset Manager<</title>
+    <title>Asset Manager</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -11,14 +11,21 @@
 
     <main id="main" class="container">
       <h1>Assets</h1>
+      <%- include('./partials/search', { currentSearch, activeTags }) %>
+      
+      <div class="tag-box">
+        <% collections.forEach((collection) => { %>
+          <%- include('./partials/tag', { tag: collection.name, activeTags, currentSearch }) %>
+        <% }) %>
+      </div>
 
       <% if (assets.length === 0) { %>
-        <p class="empty-state">Nothing here yet.</p>
+        <p class="empty-state">Nothing here.</p>
       <% } %>
 
       <section class="log-list" aria-live="polite">
         <% assets.forEach((asset) => { %>
-          <%- include('./partials/asset', { asset: asset }) %>
+          <%- include('./partials/asset', { asset, activeTags, currentSearch }) %>
         <% }) %>
       </section>
     </main>

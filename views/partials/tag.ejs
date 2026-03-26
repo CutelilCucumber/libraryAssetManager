@@ -1,0 +1,13 @@
+<% 
+  const isActive = activeTags.includes(tag);
+  const newTags = isActive
+    ? activeTags.filter(t => t !== tag)
+    : [...activeTags, tag];
+  const params = new URLSearchParams();
+  newTags.forEach(t => params.append('tags', t));
+  if (currentSearch) params.set('search', currentSearch);
+  const href = '/?' + params.toString();
+%>
+<a href="<%= href %>" class="tag <%= isActive ? 'tag--active' : '' %>">
+  <p class="tag_text"><%= tag %></p>
+</a>

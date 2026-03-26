@@ -2,16 +2,18 @@
   <header class="log-header">
     <span class="name"><%= asset.name %></span>
     <time class="time" datetime="<%= asset.created %>">
-      <%= new Date(asset.posted).toLocaleString() %>
+      <%= new Date(asset.created).toLocaleString() %>
     </time>
   </header>
   <div class="asset-info">
-    <img class="preview" src=<%= "./"+asset.file_path %> alt="asset preview">
+    <img class="preview" src="/file/<%= asset.id %>" alt="asset preview">
     <p class="text">Size: <%= asset.file_size %> bytes</p>
     <p class="text">Type: <%= asset.type %></p>
   </div>
   <div class="asset-tags">
-    <p>tags: <%= JSON.stringify(asset.tags) %></p>
+    <% asset.tags.map((tag) => { %>
+      <%- include('./tag', { tag, activeTags, currentSearch }) %>
+    <% }) %>
     
   </div>
   
