@@ -103,6 +103,7 @@ single-user tool and should be addressed before any public deployment.
 │   ├── index.ejs
 │   └── form.ejs
 ├── public/
+│   ├── demo             — assets for tabletop game
 │   └── styles.css
 └── app.js
 
