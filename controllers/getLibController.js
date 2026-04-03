@@ -39,10 +39,10 @@ async function getAllAssets(req, res) {
     results});
 };
 
-async function getAllTags(req, res) {
+async function newAssetForm(req, res) {
   const collections = await db.getAllCollections();
 
-  res.render("form", { collections });
+  res.render("form", { asset: null, collections, error: null, results: null });
 };
 
 async function serveAsset(req, res) {
@@ -54,8 +54,23 @@ async function serveAsset(req, res) {
   res.sendFile(asset.file_path);
 }
 
+async function editAssetForm(req, res) {
+  const asset = await db.getAssetById(req.params.id);
+  const collections = await db.getAllCollections();
+  
+  res.render('form', { asset, collections, error: null, results: null });
+}
+
+async function removeAsset(req, res) {
+  await db.deleteAssetById(req.params.id);
+
+  res.redirect('/');
+}
+
 module.exports = { 
   getAllAssets, 
-  getAllTags, 
-  serveAsset
+  newAssetForm, 
+  serveAsset,
+  editAssetForm,
+  removeAsset
 };

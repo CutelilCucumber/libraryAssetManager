@@ -51,11 +51,26 @@ async function getAllConnections() {
 };
 
 async function getAssetById(id) {
-  const { rows } = await pool.query('SELECT * FROM assets WHERE id = $1', [id]);
+  const { rows } = await pool.query(`
+    SELECT 
+      a.*,
+      COALESCE(
+        json_agg(c.name) FILTER (WHERE c.name IS NOT NULL),
+        '[]'::json
+      ) AS tags
+    FROM assets a
+    LEFT JOIN asset_collections ac ON a.id = ac.asset_id
+    LEFT JOIN collections c ON ac.collection_id = c.id
+    WHERE a.id = $1
+    GROUP BY a.id
+  `, [id]);
+
   return rows[0] || null;
 }
 
 async function addAssetWithTags(filePath, fileName, fileType, fileSize, mimeType, tagNames) {
+  
+  //execute transaction with client.query, not pool.query
   const client = await pool.connect();
 
   try {
@@ -64,12 +79,22 @@ async function addAssetWithTags(filePath, fileName, fileType, fileSize, mimeType
     const assetResult = await client.query(
       `INSERT INTO assets (name, file_path, type, file_size, mime_type)
        VALUES ($1, $2, $3, $4, $5)
-       ON CONFLICT (file_path) DO UPDATE SET name = EXCLUDED.name
+       ON CONFLICT (file_path) DO UPDATE SET 
+        name = EXCLUDED.name,
+        type = EXCLUDED.type,
+        file_size = EXCLUDED.file_size,
+        mime_type = EXCLUDED.mime_type
        RETURNING id`,
       [fileName, filePath, fileType, fileSize, mimeType]
     );
 
     const assetId = assetResult.rows[0].id;
+
+    // wipe existing tags so the new selection replaces
+    await client.query(
+      'DELETE FROM asset_collections WHERE asset_id = $1',
+      [assetId]
+    );
 
     for (const tagName of tagNames) {
   const collectionResult = await client.query(
@@ -91,8 +116,39 @@ async function addAssetWithTags(filePath, fileName, fileType, fileSize, mimeType
   );
 }
 
+  await client.query(`
+    DELETE FROM collections
+    WHERE id NOT IN (
+      SELECT DISTINCT collection_id FROM asset_collections
+    )
+  `);
+
     await client.query('COMMIT');
     return assetId;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+async function deleteAssetById(id) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    await client.query('DELETE FROM assets WHERE id = $1', [id]);
+
+    // remove any collections that no longer have any assets linked
+    await client.query(`
+      DELETE FROM collections
+      WHERE id NOT IN (
+        SELECT DISTINCT collection_id FROM asset_collections
+      )
+    `);
+
+    await client.query('COMMIT');
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;
@@ -106,5 +162,6 @@ module.exports = {
   getAllCollections,
   getAllConnections,
   getAssetById,
-  addAssetWithTags
+  addAssetWithTags,
+  deleteAssetById
 };
