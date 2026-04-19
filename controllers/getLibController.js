@@ -42,7 +42,7 @@ async function getAllAssets(req, res) {
 async function newAssetForm(req, res) {
   const collections = await db.getAllCollections();
 
-  res.render("form", { asset: null, collections, error: null, results: null });
+  res.render("assetForm", { asset: null, collections, error: null, results: null });
 };
 
 async function serveAsset(req, res) {

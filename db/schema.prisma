@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  GUEST
+  MEMBER
+  ADMIN
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  email      String   @unique
+  role       Role     @default(GUEST)
+  hash       String
+  salt       String
+  created    DateTime @default(now())
+
+  assets     Asset[]
+  collections Collection[]
+}
+
+model Asset {
+  id          Int      @id @default(autoincrement())
+  name        String
+  filePath    String   @unique
+  type        String?
+  fileSize    Int?
+  mimeType    String?
+  created     DateTime @default(now())
+
+  // supabase storage URL once uploaded
+  storageUrl  String?
+
+  // owner — null means ungated local asset
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerId     Int?
+
+  collections AssetCollection[]
+}
+
+model Collection {
+  id       Int     @id @default(autoincrement())
+  name     String
+
+  owner    User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerId  Int?
+
+  assets   AssetCollection[]
+
+  @@unique([name, ownerId])
+}
+
+model AssetCollection {
+  asset        Asset      @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  assetId      Int
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId Int
+
+  @@id([assetId, collectionId])
+}
