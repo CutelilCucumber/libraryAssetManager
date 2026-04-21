@@ -57,7 +57,7 @@ async function addDirectory(req, res) {
     res.redirect(`/?inserted=${results.inserted}&skipped=${results.skipped}`);
   } catch (err) {
     const collections = await db.getAllCollections();
-    res.render('form', { collections, error: err.message });
+    res.render('assetForm', { collections, error: err.message });
   }
 }
 

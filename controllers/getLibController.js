@@ -49,16 +49,16 @@ async function serveAsset(req, res) {
   const asset = await db.getAssetById(req.params.id);
 
   if (!asset) return res.status(404).send('Asset not found');
-  if (!fs.existsSync(asset.file_path)) return res.status(404).send('File not found on disk');
+  if (!fs.existsSync(asset.filePath)) return res.status(404).send('File not found on disk');
 
-  res.sendFile(asset.file_path);
+  res.sendFile(asset.filePath);
 }
 
 async function editAssetForm(req, res) {
   const asset = await db.getAssetById(req.params.id);
   const collections = await db.getAllCollections();
   
-  res.render('form', { asset, collections, error: null, results: null });
+  res.render('assetForm', { asset, collections, error: null, results: null });
 }
 
 async function removeAsset(req, res) {

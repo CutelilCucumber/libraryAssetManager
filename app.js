@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const libRouter = require("./routes/libRouter");
+const userRouter = require("./routes/userRouter");
 
 const path = require("node:path");
 const assetsPath = path.join(__dirname, "public");
@@ -12,6 +13,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use("/", libRouter);
+app.use("/", userRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);

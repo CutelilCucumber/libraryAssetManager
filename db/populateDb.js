@@ -1,78 +1,29 @@
-const fs = require("fs");
-const path = require("path");
-const pool = require("./pool");
+const fs = require('fs');
+const path = require('path');
+const prisma = require('./prismaClient');
 
 const MIME_TYPES = {
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".webp": "image/webp",
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
 };
 
 async function getOrCreateCollection(collectionCache, name) {
   const normalizedName = name.toLowerCase();
-  const key = normalizedName;
 
-  if (collectionCache.has(key)) {
-    return collectionCache.get(key);
+  if (collectionCache.has(normalizedName)) {
+    return collectionCache.get(normalizedName);
   }
 
-  const result = await pool.query(
-    `INSERT INTO collections (name, parent_collection_id)
-     VALUES ($1, NULL)
-     ON CONFLICT (LOWER(name))
-     WHERE parent_collection_id IS NULL
-     DO UPDATE SET name = EXCLUDED.name
-     RETURNING id`,
-    [normalizedName]
-  );
+  const collection = await prisma.collection.upsert({
+  where: { name: normalizedName },
+  update: {},
+  create: { name: normalizedName }
+});
 
-  const id = result.rows[0].id;
-  collectionCache.set(key, id);
-  return id;
-}
-
-async function insertAsset(client, filePath, stats, fileType) {
-  const ext = path.extname(filePath).toLowerCase();
-  const mime = MIME_TYPES[ext] || "application/octet-stream";
-  const absolutePath = path.resolve(filePath);
-
-  const result = await client.query(
-    `INSERT INTO assets (name, file_path, type, file_size, mime_type)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (file_path) DO UPDATE SET name = EXCLUDED.name
-     RETURNING id`,
-    [path.basename(filePath), absolutePath, fileType, stats.size, mime]
-  );
-
-  return result.rows[0].id;
-}
-
-async function linkToAllParents(client, assetId, collectionId) {
-  const visited = new Set();
-  let current = collectionId;
-
-  while (current) {
-    if (visited.has(current)) {
-      console.error("Cycle detected in collections at id:", current);
-      break;
-    }
-
-    visited.add(current);
-    await client.query(
-      `INSERT INTO asset_collections (asset_id, collection_id)
-       VALUES ($1, $2)
-       ON CONFLICT DO NOTHING`,
-      [assetId, current]
-    );
-
-    const res = await client.query(
-      `SELECT parent_collection_id FROM collections WHERE id = $1`,
-      [current]
-    );
-
-    current = res.rows[0]?.parent_collection_id ?? null;
-  }
+  collectionCache.set(normalizedName, collection.id);
+  return collection.id;
 }
 
 async function walk(dir, ancestorNames = [], fileType, collectionCache, results) {
@@ -94,38 +45,50 @@ async function walk(dir, ancestorNames = [], fileType, collectionCache, results)
     const ext = path.extname(entry.name).toLowerCase();
     if (!MIME_TYPES[ext]) continue;
 
-    const client = await pool.connect();
     try {
-      await client.query("BEGIN");
-
       const stats = fs.statSync(fullPath);
-      const assetId = await insertAsset(client, fullPath, stats, fileType);
+      const absolutePath = path.resolve(fullPath);
+      const mime = MIME_TYPES[ext] || 'application/octet-stream';
 
-      // link to every ancestor folder as a flat tag
-      for (const name of currentAncestors) {
-        const collectionId = await getOrCreateCollection(collectionCache, name);
-        await client.query(
-          `INSERT INTO asset_collections (asset_id, collection_id)
-           VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-          [assetId, collectionId]
-        );
-      }
+      await prisma.$transaction(async (tx) => {
+        const asset = await tx.asset.upsert({
+          where: { filePath: absolutePath },
+          update: { name: path.basename(fullPath) },
+          create: {
+            name: path.basename(fullPath),
+            filePath: absolutePath,
+            type: fileType,
+            fileSize: stats.size,
+            mimeType: mime
+          }
+        });
 
-      await client.query("COMMIT");
+        for (const name of currentAncestors) {
+          const collectionId = await getOrCreateCollection(collectionCache, name);
+          await tx.assetCollection.upsert({
+            where: {
+              assetId_collectionId: {
+                assetId: asset.id,
+                collectionId
+              }
+            },
+            update: {},
+            create: { assetId: asset.id, collectionId }
+          });
+        }
+      });
+
       results.inserted++;
-      console.log("Inserted:", fullPath);
+      console.log('Inserted:', fullPath);
     } catch (err) {
-      await client.query("ROLLBACK");
       results.skipped++;
-      console.error("Skipped:", fullPath, "—", err.message);
-    } finally {
-      client.release();
+      console.error('Skipped:', fullPath, '—', err.message);
     }
   }
 }
 
 async function populate(rootDir, fileType) {
-  if (!rootDir) throw new Error("No directory path provided");
+  if (!rootDir) throw new Error('No directory path provided');
   if (!fs.existsSync(rootDir)) throw new Error(`Directory not found: ${rootDir}`);
 
   const collectionCache = new Map();

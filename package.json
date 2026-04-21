@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "dotenv": "^17.3.1",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^6.19.3",
+    "dotenv": "^17.4.2",
     "ejs": "^5.0.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
@@ -9,11 +11,34 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pg": "^8.20.0",
-    "prisma": "^7.7.0"
+    "prisma": "^6.19.3"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
-  }
+  },
+  "name": "libraryassetmanager",
+  "version": "1.0.0",
+  "description": "A local asset management tool for organising image files with a tag-based  collection system. Built as a portfolio project using Node.js, Express,  PostgreSQL, and EJS.",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CutelilCucumber/libraryAssetManager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CutelilCucumber/libraryAssetManager/issues"
+  },
+  "homepage": "https://github.com/CutelilCucumber/libraryAssetManager#readme"
 }
