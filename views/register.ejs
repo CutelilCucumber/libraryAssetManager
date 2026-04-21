@@ -10,6 +10,7 @@
     <%- include('./partials/navbar') %>
 
     <main id="main" class="container">
+      <%- include('./partials/error') %>
       <h1>Sign-up Page</h1>
       
       <form method="POST" action="/register" class="form" novalidate>
@@ -17,6 +18,8 @@
         <div class="form-group">
           <label for="username">Enter username:</label>
           <input type="text" name="username">
+          <label for="email">Enter email:</label>
+          <input type="email" name="email">
           <label for="password">Enter password:</label>
           <input type="password" name="password">
           <label for="confirmPassword">Confirm password:</label>

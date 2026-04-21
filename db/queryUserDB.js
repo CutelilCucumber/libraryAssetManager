@@ -1,44 +1,36 @@
-const pool = require('./pool');
+const prisma = require('./prismaClient');
 
 async function getUserByUsername(username) {
-  const { rows } = await pool.query(
-    'SELECT * FROM users WHERE username = $1',
-    [username]
-  );
-  return rows[0] || null;
+  return prisma.user.findUnique({
+    where: { username }
+  });
 }
 
 async function getUserById(id) {
-  const { rows } = await pool.query(
-    'SELECT * FROM users WHERE id = $1',
-    [id]
-  );
-  return rows[0] || null;
+  return prisma.user.findUnique({
+    where: { id: parseInt(id) }
+  });
 }
 
-async function createUser(username, firstname, lastname, member, admin, hash, salt) {
-  const { rows } = await pool.query(
-    `INSERT INTO users 
-    (username, firstname, lastname, member, admin, hash, salt) 
-     VALUES ($1, $2, $3, $4, $5, $6, $7) 
-     RETURNING id`,
-    [username, firstname, lastname, member, admin, hash, salt]
-  );
-  return rows[0].id;
+async function createUser(username, email, hash, salt) {
+  const user = await prisma.user.create({
+    data: { username, email, hash, salt }
+  });
+  return user.id;
 }
 
 async function addMembership(id) {
-  await pool.query(
-    'UPDATE users SET member = $1 WHERE id = $2',
-    [true, id]
-  );
+  await prisma.user.update({
+    where: { id: parseInt(id) },
+    data: { role: 'MEMBER' }
+  });
 }
 
 async function addAdmin(id) {
-  await pool.query(
-    'UPDATE users SET admin = $1 WHERE id = $2',
-    [true, id]
-  );
+  await prisma.user.update({
+    where: { id: parseInt(id) },
+    data: { role: 'ADMIN' }
+  });
 }
 
 module.exports = {

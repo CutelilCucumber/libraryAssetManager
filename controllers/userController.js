@@ -5,17 +5,14 @@ const db = require('../db/queryUserDB.js')
 async function registerPost(req, res, next) {
   const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    if (!errors.isEmpty()) {
+    return res.redirect(`/register?error=${encodeURIComponent(errors.array()[0].msg)}`);
   }
   console.log(req.body)
-  const { firstname, lastname, username, password } = req.body;
+  const { username, email, password } = req.body;
   const saltHash = genPassword(password);
 
-  const member = false;
-  const admin = false;
-
-  await db.createUser(username, firstname, lastname, member, admin,  saltHash.hash, saltHash.salt);
+  await db.createUser(username, email, saltHash.hash, saltHash.salt);
   res.redirect('/login');
 }
 
@@ -24,7 +21,7 @@ async function loginGet(req, res) {
 }
 
 async function registerGet(req, res) {
-  res.render("register");
+  res.render('register', { error: req.query.error || null });
 }
 
 async function logoutGet(req, res) {
