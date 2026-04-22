@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const userController = require("../controllers/userController");
 const registerValidation = require('../middleware/registerValidation');
-const auth = require('../middleware/checkAuth.js')
+const auth = require('../middleware/checkAuth.js');
 const passport = require('passport');
 const userRouter = Router();
 

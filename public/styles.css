@@ -437,6 +437,7 @@ textarea:focus {
 }
 .result-dismiss:hover { opacity: 1; }
 /*  fix this */
+
 .welcome {
   display: flex;
   align-items: center;

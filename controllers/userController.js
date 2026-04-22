@@ -8,11 +8,11 @@ async function registerPost(req, res, next) {
     if (!errors.isEmpty()) {
     return res.redirect(`/register?error=${encodeURIComponent(errors.array()[0].msg)}`);
   }
-  console.log(req.body)
   const { username, email, password } = req.body;
   const saltHash = genPassword(password);
-
   await db.createUser(username, email, saltHash.hash, saltHash.salt);
+  console.log("User Registered:")
+  console.log(req.body)
   res.redirect('/login');
 }
 
@@ -39,13 +39,17 @@ async function joinGet(req, res) {
 }
 
 async function joinPost(req, res) {
+  console.log("User updated:")
+  console.log(req.user)
   const { secret } = req.body;
   if (secret === process.env.ADM_PASS){
     db.addMembership(req.user.id)
     db.addAdmin(req.user.id)
+    console.log("To: "+req.user.role)
     res.redirect("/local");
   } else if (secret === process.env.MEM_PASS){
-    db.addMembership(req.user.id)
+    db.addMembership(req.user.role)
+    console.log("To: "+req.user.role)
     res.redirect("/local");
   } else {
     res.redirect("/join");

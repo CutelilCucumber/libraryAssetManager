@@ -22,7 +22,7 @@
       </li>
     <% } %>
       <% if (locals.user) { %>
-        <% if (!locals.user.member) { %>
+        <% if (locals.user.role === "GUEST") { %>
           <li class="nav-split"><a href="/join">Become a Member</a></li>
         <% } %>
         <li><a href="/logout">Logout</a></li>

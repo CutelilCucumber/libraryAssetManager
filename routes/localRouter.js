@@ -1,6 +1,6 @@
 const { Router } = require("express");
-const getController = require("../controllers/getLibController");
-const postController = require("../controllers/postLibController");
+const getController = require("../controllers/getLibController.js");
+const postController = require("../controllers/postLibController.js");
 const assetRouter = Router();
 
 assetRouter.get("/", getController.getAllAssets);

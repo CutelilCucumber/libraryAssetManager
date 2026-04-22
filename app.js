@@ -1,10 +1,12 @@
 const express = require("express");
 const session = require('express-session');
+const auth = require('./middleware/checkAuth.js');
 var passport = require('passport');
+
 const app = express();
 require('dotenv').config()
 
-const libRouter = require("./routes/libRouter");
+const localRouter = require("./routes/localRouter");
 const userRouter = require("./routes/userRouter");
 
 require('./lib/passport');
@@ -28,8 +30,8 @@ app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
 });
-//use routes, maybe change to library on scale
-app.use("/local", libRouter);
+//use routes
+app.use("/local", auth.isAuth, localRouter);
 app.use("/", userRouter);
 
 app.use((err, req, res, next) => {
