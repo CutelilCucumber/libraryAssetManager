@@ -13,7 +13,7 @@
       <%- include('./partials/error') %>
       <h1>Add to Collection</h1>
 
-      <form method="POST" action="/single" class="form">
+      <form method="POST" action="/local/single" class="form">
         <h2 class="form-title">Single Asset</h2>
         <div class="form-group">
           <label class="path_input">
@@ -70,7 +70,7 @@
       <button type="submit" class="btn">Submit</button>
       </form>
 
-      <form method="POST" action="/multiple" class="form">
+      <form method="POST" action="/local/multiple" class="form">
         <h2 class="form-title">Collection Loader</h2>
         <p class="tooltip">The loader accepts a directory path, recursively walks every subfolder, and registers each folder as a tag in the database. Any image files it finds along the way are saved as assets and automatically tagged with every folder they are nested inside (Ie. anything inside Assets/Nature/Trees/ would receive the tags Assets, Nature, and Trees) Re-running it on the same directory is safe since it skips assets and collections that already exist.</p>
         <div class="form-group">

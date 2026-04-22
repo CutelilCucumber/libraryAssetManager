@@ -1,18 +1,52 @@
 <header class="site-header">
   <nav class="nav" aria-label="Main navigation">
     <ul class="nav-list">
-      <li><a href="/">Home</a></li>
-      <% if (locals.user) {%>
-        <li><a href="/new">Post</a></li>
-        <li class="nav-split"><a href="/logout">Logout</a></li>
+      <!-- <li><a href="/">Home</a></li> -->
 
-      <% if (!locals.user.member) {%>
-        <li><a href="/join">Become a Member</a></li>
-      <% }%>
+    <% if (locals.user) { %>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown__trigger">Local</button>
+        <ul class="nav-dropdown__menu">
+          <li><a href="/local">Library</a></li>
+          <li><a href="/local/new">New Asset</a></li>
+          
+        </ul>
+      </li>
+
+      <li class="nav-dropdown">
+        <button class="nav-dropdown__trigger">Public</button>
+        <ul class="nav-dropdown__menu">
+          <li><a href="/public">Library</a></li>
+          <li><a href="/public/new">New Asset</a></li>
+        </ul>
+      </li>
+    <% } %>
+      <% if (locals.user) { %>
+        <% if (!locals.user.member) { %>
+          <li class="nav-split"><a href="/join">Become a Member</a></li>
+        <% } %>
+        <li><a href="/logout">Logout</a></li>
       <% } else { %>
         <li class="nav-split"><a href="/login">Login</a></li>
         <li><a href="/register">Register</a></li>
-      <%}%>
+      <% } %>
     </ul>
   </nav>
 </header>
+
+<script>
+  document.querySelectorAll('.nav-dropdown__trigger').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      const dropdown = e.currentTarget.closest('.nav-dropdown');
+      const isOpen = dropdown.classList.contains('nav-dropdown--open');
+      document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('nav-dropdown--open'));
+      if (!isOpen) dropdown.classList.add('nav-dropdown--open');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-dropdown')) {
+      document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('nav-dropdown--open'));
+    }
+  });
+</script>

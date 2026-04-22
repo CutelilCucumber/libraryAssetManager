@@ -6,14 +6,14 @@
     </time>
   </header>
   <div class="asset-info">
-    <img class="preview" src="/file/<%= asset.id %>" alt="asset preview">
+    <img class="preview" src="/local/file/<%= asset.id %>" alt="asset preview">
     <div class="asset-text">
       <p class="text">Size: <%= asset.file_size %> bytes</p>
       <p class="text">Type: <%= asset.type %></p>
     </div>
     <div class="asset-controls">
-      <a class="btn" href="/edit/<%= asset.id %>">Edit</a>
-      <a class="btn" href="/delete/<%= asset.id %>">Delete</a>
+      <a class="btn" href="/local/edit/<%= asset.id %>">Edit</a>
+      <a class="btn" href="/local/delete/<%= asset.id %>">Delete</a>
     </div>
   </div>
   <div class="asset-tags">

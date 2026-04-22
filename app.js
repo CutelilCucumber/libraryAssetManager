@@ -7,23 +7,29 @@ require('dotenv').config()
 const libRouter = require("./routes/libRouter");
 const userRouter = require("./routes/userRouter");
 
-var crypto = require('crypto');
-
 require('./lib/passport');
 
+//usable path for asset previews, might be old
 const path = require("node:path");
 const assetsPath = path.join(__dirname, "public");
 
 app.use(express.static(assetsPath));
 app.use(express.urlencoded({ extended: true }));
 
+//use passport session for user state management
 app.use(session({ secret: process.env.SECRET, resave: false, saveUninitialized: false }));
 app.use(passport.session());
 
+// attach ejs view engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-
-app.use("/", libRouter);
+//middleware for ejs vars
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
+//use routes, maybe change to library on scale
+app.use("/local", libRouter);
 app.use("/", userRouter);
 
 app.use((err, req, res, next) => {

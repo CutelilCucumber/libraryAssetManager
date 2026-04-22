@@ -29,7 +29,7 @@ async function logoutGet(req, res) {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    res.redirect("/login");
   });
 }
 
@@ -43,10 +43,10 @@ async function joinPost(req, res) {
   if (secret === process.env.ADM_PASS){
     db.addMembership(req.user.id)
     db.addAdmin(req.user.id)
-    res.redirect("/");
+    res.redirect("/local");
   } else if (secret === process.env.MEM_PASS){
     db.addMembership(req.user.id)
-    res.redirect("/");
+    res.redirect("/local");
   } else {
     res.redirect("/join");
   }

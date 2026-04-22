@@ -31,7 +31,7 @@ async function getAllAssets(req, res) {
   skipped: parseInt(req.query.skipped)
 } : null;
 
-  res.render("index", { 
+  res.render("local", { 
     assets, 
     collections,
     activeTags, 

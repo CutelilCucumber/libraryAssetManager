@@ -13,7 +13,7 @@ userRouter.get("/logout", userController.logoutGet);
 userRouter.get("/join", auth.isAuth, userController.joinGet);
 userRouter.post("/login", passport.authenticate('local', { 
   failureRedirect: '/login?error=Incorrect username or password', 
-  successRedirect: '/' 
+  successRedirect: '/local' 
 }));
 userRouter.post("/register", registerValidation, userController.registerPost);
 userRouter.post("/join", auth.isAuth, userController.joinPost);
