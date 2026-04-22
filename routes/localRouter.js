@@ -10,6 +10,7 @@ assetRouter.get("/file/:id", getController.serveAsset);
 assetRouter.post("/single", postController.addSingleAsset);
 assetRouter.post("/multiple", postController.addDirectory);
 
+//buttons instead of forms need to be get
 assetRouter.get("/edit/:id", getController.editAssetForm);
 assetRouter.get("/delete/:id", getController.removeAsset);
 

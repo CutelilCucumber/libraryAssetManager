@@ -8,17 +8,20 @@
   <div class="asset-info">
     <img class="preview" src="/local/file/<%= asset.id %>" alt="asset preview">
     <div class="asset-text">
-      <p class="text">Size: <%= asset.file_size %> bytes</p>
+      <p class="text">Size: <%= asset.fileSize %> bytes</p>
       <p class="text">Type: <%= asset.type %></p>
     </div>
     <div class="asset-controls">
-      <a class="btn" href="/local/edit/<%= asset.id %>">Edit</a>
-      <a class="btn" href="/local/delete/<%= asset.id %>">Delete</a>
+        <!-- view, download, and role-gated delete. -->
+      <% if (locals.user) { %>
+        <% if (locals.user.role === "MEMBER" || "ADMIN") { %>
+      <a class="btn" href="/public/new/<%= asset.id %>">Make Public</a>
+      <% }} %>
     </div>
   </div>
   <div class="asset-tags">
     <% asset.tags.map((tag) => { %>
-      <%- include('./tag', { tag, activeTags, currentSearch }) %>
+      <%- include("./tag", { tag, activeTags, currentSearch, basePath: "/public" }) %>
     <% }) %>
   </div>
 </article>

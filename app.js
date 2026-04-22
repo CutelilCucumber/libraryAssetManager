@@ -1,12 +1,15 @@
 const express = require("express");
 const session = require('express-session');
-const auth = require('./middleware/checkAuth.js');
 var passport = require('passport');
+const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
+const prisma = require('./db/prismaClient');
+const auth = require('./middleware/checkAuth.js');
 
 const app = express();
 require('dotenv').config()
 
 const localRouter = require("./routes/localRouter");
+const publicRouter = require("./routes/publicRouter");
 const userRouter = require("./routes/userRouter");
 
 require('./lib/passport');
@@ -18,8 +21,23 @@ const assetsPath = path.join(__dirname, "public");
 app.use(express.static(assetsPath));
 app.use(express.urlencoded({ extended: true }));
 
-//use passport session for user state management
-app.use(session({ secret: process.env.SECRET, resave: false, saveUninitialized: false }));
+//use prisma store and passport session for user state management
+app.use(session({
+  cookie: {
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 1 week
+  },
+  secret: process.env.SECRET,
+  resave: true,
+  saveUninitialized: true,
+  store: new PrismaSessionStore(
+    prisma,
+    {
+      checkPeriod: 2 * 60 * 1000,
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined,
+    }
+  )
+}));
 app.use(passport.session());
 
 // attach ejs view engine
@@ -32,6 +50,7 @@ app.use((req, res, next) => {
 });
 //use routes
 app.use("/local", auth.isAuth, localRouter);
+app.use("/public", auth.isMember, publicRouter);
 app.use("/", userRouter);
 
 app.use((err, req, res, next) => {

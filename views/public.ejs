@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Local Assets</title>
+    <title>Public Assets</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -11,8 +11,8 @@
 
     <main id="main" class="container">
       <%- include('partials/results') %>
-      <h1>Local Assets</h1>
-      <%- include('./partials/search', { currentSearch, activeTags, basePath: 'local' }) %>
+      <h1>Public Assets</h1>
+      <%- include('./partials/search', { currentSearch, activeTags, basePath: 'public' }) %>
       
       <div class="tag-box">
         <% collections.forEach((collection) => { %>
@@ -26,7 +26,7 @@
 
       <section class="log-list" aria-live="polite">
         <% assets.forEach((asset) => { %>
-          <%- include('./partials/localAsset', { asset, activeTags, currentSearch }) %>
+          <%- include('./partials/publicAsset', { asset, activeTags, currentSearch }) %>
         <% }) %>
       </section>
     </main>

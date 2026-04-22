@@ -6,7 +6,7 @@
   const params = new URLSearchParams();
   newTags.forEach(t => params.append('tags', t));
   if (currentSearch) params.set('search', currentSearch);
-  const href = '/?' + params.toString();
+  const href = basePath + '?' + params.toString();
 %>
 <a href="<%= href %>" class="tag <%= isActive ? 'tag--active' : '' %>">
   <p class="tag_text"><%= tag.toUpperCase() %></p>

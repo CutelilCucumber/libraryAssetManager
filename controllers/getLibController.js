@@ -39,6 +39,38 @@ async function getAllAssets(req, res) {
     results});
 };
 
+async function getPublicAssets(req, res) {
+  const rawAssets = await db.getPublicAssets();
+  const collections = await db.getAllCollections();
+
+  const activeTags = req.query.tags
+    ? [].concat(req.query.tags)
+    : [];
+  const currentSearch = (req.query.search || '').toLowerCase().trim();
+
+  let assets = rawAssets;
+
+  if (activeTags.length > 0) {
+    assets = assets.filter(asset =>
+      activeTags.every(tag => asset.tags.includes(tag))
+    );
+  }
+
+  if (currentSearch) {
+    assets = assets.filter(asset =>
+      asset.name.toLowerCase().includes(currentSearch)
+    );
+  }
+
+  res.render('public', {
+    assets,
+    collections,
+    activeTags,
+    currentSearch,
+    results: null
+  });
+};
+
 async function newAssetForm(req, res) {
   const collections = await db.getAllCollections();
 
@@ -52,25 +84,38 @@ async function serveAsset(req, res) {
   if (!fs.existsSync(asset.filePath)) return res.status(404).send('File not found on disk');
 
   res.sendFile(asset.filePath);
-}
+};
 
 async function editAssetForm(req, res) {
   const asset = await db.getAssetById(req.params.id);
   const collections = await db.getAllCollections();
   
   res.render('assetForm', { asset, collections, error: null, results: null });
-}
+};
 
 async function removeAsset(req, res) {
   await db.deleteAssetById(req.params.id);
 
-  res.redirect('/');
+  res.redirect('/local');
+};
+
+async function promoteAsset(req, res) {
+  const fileId = parseInt(req.params.id)
+
+  try {
+    await db.promoteAssetById(fileId);
+    res.redirect(`/public?inserted=1&skipped=0`);
+  } catch (err) {
+    res.redirect('/public', { error: err.message });
+  }
 }
 
 module.exports = { 
   getAllAssets, 
+  getPublicAssets,
   newAssetForm, 
   serveAsset,
   editAssetForm,
-  removeAsset
+  removeAsset,
+  promoteAsset
 };

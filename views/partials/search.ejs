@@ -1,5 +1,5 @@
 <section class="search-field">
-  <form class="search" action="/local" method="GET">
+  <form class="search" action="<%= basePath %>" method="GET">
     <% activeTags.forEach(tag => { %>
       <input type="hidden" name="tags" value="<%= tag %>" />
     <% }) %>

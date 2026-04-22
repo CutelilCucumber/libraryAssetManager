@@ -33,14 +33,12 @@ model Asset {
   type        String?
   fileSize    Int?
   mimeType    String?
+  storageUrl  String? //integrate with supabase
+  isPublic    Boolean  @default(false)
   created     DateTime @default(now())
 
-  // supabase storage URL once uploaded
-  storageUrl  String?
-
-  // owner — null means ungated local asset
-  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   ownerId     Int?
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
 
   collections AssetCollection[]
 }
@@ -62,4 +60,11 @@ model AssetCollection {
   collectionId Int
 
   @@id([assetId, collectionId])
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }

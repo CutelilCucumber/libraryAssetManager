@@ -1,0 +1,28 @@
+<article class="log" tabindex="0">
+  <header class="log-header">
+    <span class="name"><%= asset.name %></span>
+    <time class="time" datetime="<%= asset.created %>">
+      <%= new Date(asset.created).toLocaleString() %>
+    </time>
+  </header>
+  <div class="asset-info">
+    <img class="preview" src="/local/file/<%= asset.id %>" alt="asset preview">
+    <div class="asset-text">
+      <p class="text">Size: <%= asset.fileSize %> bytes</p>
+      <p class="text">Type: <%= asset.type %></p>
+    </div>
+    <div class="asset-controls">
+      <% if (locals.user) { %>
+        <% if (locals.user.role === "MEMBER" || "ADMIN") { %>
+      <a class="btn" href="/public/new/<%= asset.id %>">Make Public</a>
+      <% }} %>
+      <a class="btn" href="/local/edit/<%= asset.id %>">Edit</a>
+      <a class="btn" href="/local/delete/<%= asset.id %>">Delete</a>
+    </div>
+  </div>
+  <div class="asset-tags">
+    <% asset.tags.map((tag) => { %>
+      <%- include("./tag", { tag, activeTags, currentSearch, basePath: "/local" }) %>
+    <% }) %>
+  </div>
+</article>

@@ -1,3 +1,4 @@
+const { promoteAsset } = require('../controllers/postLibController');
 const prisma = require('./prismaClient');
 
 async function getAllAssets() {
@@ -8,6 +9,23 @@ async function getAllAssets() {
         include: {
           collection: true
         }
+      }
+    }
+  });
+
+  return assets.map(asset => ({
+    ...asset,
+    tags: asset.collections.map(ac => ac.collection.name)
+  }));
+}
+
+async function getPublicAssets() {
+  const assets = await prisma.asset.findMany({
+    where: { isPublic: true },
+    orderBy: { id: 'asc' },
+    include: {
+      collections: {
+        include: { collection: true }
       }
     }
   });
@@ -94,11 +112,20 @@ async function deleteAssetById(id) {
   });
 }
 
+async function promoteAssetById(id) {
+  await prisma.asset.update({
+    where: { id: id },
+    data: { isPublic: true }
+  });
+}
+
 module.exports = {
   getAllAssets,
+  getPublicAssets,
   getAllCollections,
   getAllConnections,
   getAssetById,
   addAssetWithTags,
-  deleteAssetById
+  deleteAssetById,
+  promoteAssetById
 };

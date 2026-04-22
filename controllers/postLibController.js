@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const db = require('../db/queryDb');
 const pop = require('../db/populateDb.js')
-const getController = require('./getLibController.js')
 
 const MIME_TYPES = {
   '.png': 'image/png',

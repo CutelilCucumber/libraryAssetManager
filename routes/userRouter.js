@@ -7,7 +7,7 @@ const userRouter = Router();
 
 userRouter.get('/', (req, res) => {
   if (req.user) return res.redirect('/local');
-  res.render('welcome');
+  res.render('welcome', { error: req.query.error || null });
 });
 
 userRouter.get('/login', (req, res) => {

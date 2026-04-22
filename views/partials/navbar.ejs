@@ -13,13 +13,8 @@
         </ul>
       </li>
 
-      <li class="nav-dropdown">
-        <button class="nav-dropdown__trigger">Public</button>
-        <ul class="nav-dropdown__menu">
-          <li><a href="/public">Library</a></li>
-          <li><a href="/public/new">New Asset</a></li>
-        </ul>
-      </li>
+      <li><a href="/Public">Public</a></li>
+
     <% } %>
       <% if (locals.user) { %>
         <% if (locals.user.role === "GUEST") { %>
