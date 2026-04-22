@@ -5,6 +5,11 @@ const auth = require('../middleware/checkAuth.js')
 const passport = require('passport');
 const userRouter = Router();
 
+userRouter.get('/', (req, res) => {
+  if (req.user) return res.redirect('/local');
+  res.render('welcome');
+});
+
 userRouter.get('/login', (req, res) => {
   res.render('login', { error: req.query.error || null });
 });

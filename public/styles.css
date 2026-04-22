@@ -436,3 +436,63 @@ textarea:focus {
   line-height: 1;
 }
 .result-dismiss:hover { opacity: 1; }
+/*  fix this */
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.welcome__content {
+  max-width: 480px;
+  text-align: center;
+}
+
+.welcome__title {
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.welcome__description {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.welcome__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.welcome__btn {
+  padding: 10px 24px;
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 0.5px solid var(--color-border-secondary);
+  transition: background 0.15s ease;
+}
+
+.welcome__btn--primary {
+  background: var(--color-background-info);
+  color: var(--color-text-info);
+  border-color: var(--color-border-info);
+}
+
+.welcome__btn--primary:hover {
+  background: var(--color-background-secondary);
+}
+
+.welcome__btn--secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+}
+
+.welcome__btn--secondary:hover {
+  background: var(--color-background-secondary);
+}
