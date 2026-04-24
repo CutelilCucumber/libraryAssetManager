@@ -1,4 +1,3 @@
-const { promoteAsset } = require('../controllers/postLibController');
 const prisma = require('./prismaClient');
 
 async function getAllAssets() {
@@ -119,6 +118,13 @@ async function promoteAssetById(id) {
   });
 }
 
+async function unpromoteAssetById(id) {
+  await prisma.asset.update({
+    where: { id },
+    data: { isPublic: false }
+  });
+}
+
 module.exports = {
   getAllAssets,
   getPublicAssets,
@@ -127,5 +133,6 @@ module.exports = {
   getAssetById,
   addAssetWithTags,
   deleteAssetById,
-  promoteAssetById
+  promoteAssetById,
+  unpromoteAssetById
 };

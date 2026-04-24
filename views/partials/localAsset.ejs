@@ -14,10 +14,16 @@
     <div class="asset-controls">
       <% if (locals.user) { %>
         <% if (locals.user.role === "MEMBER" || "ADMIN") { %>
-      <a class="btn" href="/public/new/<%= asset.id %>">Make Public</a>
+      <form action="/public/new/<%= asset.id %>" method="POST">
+        <button type="submit">Delete</button>
+      </form>
       <% }} %>
-      <a class="btn" href="/local/edit/<%= asset.id %>">Edit</a>
-      <a class="btn" href="/local/delete/<%= asset.id %>">Delete</a>
+      <form action="/local/<%= asset.id %>/edit" method="POST">
+        <button type="submit">Edit</button>
+      </form>
+      <form action="/local/<%= asset.id %>/delete" method="POST">
+        <button type="submit">Delete</button>
+      </form>
     </div>
   </div>
   <div class="asset-tags">

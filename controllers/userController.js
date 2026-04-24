@@ -1,6 +1,6 @@
 const { body, validationResult } = require('express-validator');
 const { genPassword } = require('../lib/passwordUtils.js')
-const db = require('../db/queryUserDB.js')
+const db = require('../db');
 
 async function registerPost(req, res, next) {
   const errors = validationResult(req);

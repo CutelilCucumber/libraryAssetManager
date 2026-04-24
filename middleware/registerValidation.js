@@ -28,4 +28,6 @@ const registerValidation = [
     })
 ];
 
-module.exports = registerValidation;
+module.exports = {
+  registerValidation
+}

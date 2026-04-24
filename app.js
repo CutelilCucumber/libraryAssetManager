@@ -3,7 +3,16 @@ const session = require('express-session');
 var passport = require('passport');
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const prisma = require('./db/prismaClient');
-const auth = require('./middleware/checkAuth.js');
+const { isAuth, isMember } = require('./middleware');
+
+try {
+  const pub = require('./controllers/publicController');
+  console.log('public controller loaded:', Object.keys(pub));
+} catch (err) {
+  console.error('public controller failed to load:', err);
+}
+
+
 
 const app = express();
 require('dotenv').config()
@@ -49,8 +58,8 @@ app.use((req, res, next) => {
   next();
 });
 //use routes
-app.use("/local", auth.isAuth, localRouter);
-app.use("/public", auth.isMember, publicRouter);
+app.use("/local", isAuth, localRouter);
+app.use("/public", isMember, publicRouter);
 app.use("/", userRouter);
 
 app.use((err, req, res, next) => {

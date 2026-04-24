@@ -1,8 +1,18 @@
 const { Router } = require("express");
-const getController = require("../controllers/getLibController.js");
 const publicRouter = Router();
+const { isAdmin } = require("../middleware")
+const {
+  getLibrary,
+  serveAsset,
+  promoteAsset,
+  removeFromPublic,
+  deleteAsset
+} = require('../controllers/publicController');
 
-publicRouter.get("/", getController.getPublicAssets);
-publicRouter.get("/new/:id", getController.promoteAsset);
+publicRouter.get('/', getLibrary)
+publicRouter.get('/file/:id', serveAsset);
+publicRouter.post('/add/:id', promoteAsset);
+publicRouter.post('/:id/remove', removeFromPublic);
+publicRouter.post('/:id/delete', isAdmin, deleteAsset);
 
 module.exports = publicRouter;

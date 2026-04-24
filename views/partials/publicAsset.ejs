@@ -6,17 +6,32 @@
     </time>
   </header>
   <div class="asset-info">
-    <img class="preview" src="/local/file/<%= asset.id %>" alt="asset preview">
+    <img class="preview" src="/public/file/<%= asset.id %>" alt="asset preview">
     <div class="asset-text">
       <p class="text">Size: <%= asset.fileSize %> bytes</p>
       <p class="text">Type: <%= asset.type %></p>
+      <p class="text">Owner: <%= asset.owner ? asset.owner.username : 'unknown' %></p>
     </div>
     <div class="asset-controls">
-        <!-- view, download, and role-gated delete. -->
+      <a href="/public/file/<%= asset.id %>" target="_blank">View</a>
+      <a href="/public/file/<%= asset.id %>" download="<%= asset.name %>">Download</a>
+
       <% if (locals.user) { %>
-        <% if (locals.user.role === "MEMBER" || "ADMIN") { %>
-      <a class="btn" href="/public/new/<%= asset.id %>">Make Public</a>
-      <% }} %>
+
+        <%# remove from public — owner or admin %>
+        <% if (locals.user.role === 'ADMIN' || asset.owner && asset.owner.id === locals.user.id) { %>
+          <form action="/public/<%= asset.id %>/remove" method="POST">
+            <button type="submit">Remove from Public</button>
+          </form>
+        <% } %>
+
+        <%# delete entirely — admin only %>
+        <% if (locals.user.role === 'ADMIN') { %>
+          <form action="/public/<%= asset.id %>/delete" method="POST">
+            <button type="submit">Delete</button>
+          </form>
+        <% } %>
+      <% } %>
     </div>
   </div>
   <div class="asset-tags">

@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const userController = require("../controllers/userController");
-const registerValidation = require('../middleware/registerValidation');
-const auth = require('../middleware/checkAuth.js');
+const middleware = require('../middleware')
 const passport = require('passport');
 const userRouter = Router();
 
@@ -15,12 +14,12 @@ userRouter.get('/login', (req, res) => {
 });
 userRouter.get("/register", userController.registerGet);
 userRouter.get("/logout", userController.logoutGet);
-userRouter.get("/join", auth.isAuth, userController.joinGet);
+userRouter.get("/join", middleware.isAuth, userController.joinGet);
 userRouter.post("/login", passport.authenticate('local', { 
   failureRedirect: '/login?error=Incorrect username or password', 
   successRedirect: '/local' 
 }));
-userRouter.post("/register", registerValidation, userController.registerPost);
-userRouter.post("/join", auth.isAuth, userController.joinPost);
+userRouter.post("/register", middleware.registerValidation, userController.registerPost);
+userRouter.post("/join", middleware.isAuth, userController.joinPost);
 
 module.exports = userRouter;

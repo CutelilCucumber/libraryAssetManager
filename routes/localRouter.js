@@ -1,17 +1,22 @@
 const { Router } = require("express");
-const getController = require("../controllers/getLibController.js");
-const postController = require("../controllers/postLibController.js");
-const assetRouter = Router();
+const localRouter = Router();
+const {
+  getLibrary,
+  getAssetForm,
+  serveAsset,
+  addSingleAsset,
+  addDirectory,
+  deleteAsset
+} = require("../controllers/localController.js");
 
-assetRouter.get("/", getController.getAllAssets);
-assetRouter.get("/new", getController.newAssetForm);
-assetRouter.get("/file/:id", getController.serveAsset);
+localRouter.get("/", getLibrary);
+localRouter.get("/new", getAssetForm);
+localRouter.get("/file/:id", serveAsset);
+localRouter.get("/:id/edit", getAssetForm);
 
-assetRouter.post("/single", postController.addSingleAsset);
-assetRouter.post("/multiple", postController.addDirectory);
+localRouter.post("/single", addSingleAsset);
+localRouter.post("/multiple", addDirectory);
+localRouter.post("/:id/edit", addSingleAsset);
+localRouter.post("/:id/delete", deleteAsset);
 
-//buttons instead of forms need to be get
-assetRouter.get("/edit/:id", getController.editAssetForm);
-assetRouter.get("/delete/:id", getController.removeAsset);
-
-module.exports = assetRouter;
+module.exports = localRouter;
