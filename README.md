@@ -88,6 +88,8 @@ assets are updated rather than duplicated.
 Supported file types: `.png`, `.jpg`, `.jpeg`, `.webp`
 
 ## Project Structure
+
+```
 ├── controllers/
 │   ├── localController.js   — local library CRUD and import
 │   └── publicController.js  — public library and promotion
@@ -126,6 +128,7 @@ Supported file types: `.png`, `.jpg`, `.jpeg`, `.webp`
 │   ├── public.ejs
 │   └── welcome.ejs
 └── app.js
+```
 
 ## Security Notes
 
