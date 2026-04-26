@@ -92,7 +92,8 @@ Supported file types: `.png`, `.jpg`, `.jpeg`, `.webp`
 ```
 ├── controllers/
 │   ├── localController.js   — local library CRUD and import
-│   └── publicController.js  — public library and promotion
+│   ├── publicController.js  — public library and promotion
+│   └── publicController.js  — registration and user roles
 ├── db/
 │   ├── index.js             — barrel file
 │   ├── populateDb.js        — recursive directory import
@@ -100,14 +101,16 @@ Supported file types: `.png`, `.jpg`, `.jpeg`, `.webp`
 │   ├── queryDb.js           — asset and collection queries
 │   └── queryUserDb.js       — user queries
 ├── lib/
+│   ├── passport.js
 │   └── passwordUtils.js     — PBKDF2 hash and verify
 ├── middleware/
-│   ├── authMiddleware.js    — isAuth, isMember, isAdmin
+│   ├── checkAuth.js    — isAuth, isMember, isAdmin
 │   ├── index.js             — barrel file
 │   └── registerValidation.js
 ├── prisma/
 │   └── schema.prisma
 ├── public/
+│   ├── demo/                — Free files for recursion testing
 │   └── styles.css
 ├── routes/
 │   ├── localRouter.js
@@ -117,15 +120,19 @@ Supported file types: `.png`, `.jpg`, `.jpeg`, `.webp`
 │   └── filterAssets.js      — shared tag and search filtering
 ├── views/
 │   ├── partials/
-│   │   ├── asset.ejs
 │   │   ├── error.ejs
+│   │   ├── localAsset.ejs
 │   │   ├── navbar.ejs
+│   │   ├── publicAsset.ejs
 │   │   ├── results.ejs
 │   │   ├── search.ejs
 │   │   └── tag.ejs
 │   ├── assetForm.ejs
 │   ├── local.ejs
+│   ├── login.ejs
+│   ├── memberForm.ejs
 │   ├── public.ejs
+│   ├── register.ejs
 │   └── welcome.ejs
 └── app.js
 ```
