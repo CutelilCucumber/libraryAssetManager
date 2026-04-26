@@ -11,7 +11,7 @@ const {
 
 publicRouter.get('/', getLibrary)
 publicRouter.get('/file/:id', serveAsset);
-publicRouter.post('/add/:id', promoteAsset);
+publicRouter.post('/new/:id', promoteAsset);
 publicRouter.post('/:id/remove', removeFromPublic);
 publicRouter.post('/:id/delete', isAdmin, deleteAsset);
 

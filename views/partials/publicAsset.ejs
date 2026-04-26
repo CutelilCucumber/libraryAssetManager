@@ -13,22 +13,22 @@
       <p class="text">Owner: <%= asset.owner ? asset.owner.username : 'unknown' %></p>
     </div>
     <div class="asset-controls">
-      <a href="/public/file/<%= asset.id %>" target="_blank">View</a>
-      <a href="/public/file/<%= asset.id %>" download="<%= asset.name %>">Download</a>
+      <a class="btn" href="/public/file/<%= asset.id %>" target="_blank">View</a>
+      <a class="btn" href="/public/file/<%= asset.id %>" download="<%= asset.name %>">Download</a>
 
       <% if (locals.user) { %>
 
         <%# remove from public — owner or admin %>
         <% if (locals.user.role === 'ADMIN' || asset.owner && asset.owner.id === locals.user.id) { %>
           <form action="/public/<%= asset.id %>/remove" method="POST">
-            <button type="submit">Remove from Public</button>
+            <button class="btn" type="submit">Remove from Public</button>
           </form>
         <% } %>
 
         <%# delete entirely — admin only %>
         <% if (locals.user.role === 'ADMIN') { %>
           <form action="/public/<%= asset.id %>/delete" method="POST">
-            <button type="submit">Delete</button>
+            <button class="btn" type="submit">Delete</button>
           </form>
         <% } %>
       <% } %>

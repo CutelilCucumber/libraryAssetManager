@@ -15,14 +15,14 @@
       <% if (locals.user) { %>
         <% if (locals.user.role === "MEMBER" || "ADMIN") { %>
       <form action="/public/new/<%= asset.id %>" method="POST">
-        <button type="submit">Delete</button>
+        <button class="btn" type="submit">Make Public</button>
       </form>
       <% }} %>
       <form action="/local/<%= asset.id %>/edit" method="POST">
-        <button type="submit">Edit</button>
+        <button class="btn" type="submit">Edit</button>
       </form>
       <form action="/local/<%= asset.id %>/delete" method="POST">
-        <button type="submit">Delete</button>
+        <button class="btn" type="submit">Delete</button>
       </form>
     </div>
   </div>
