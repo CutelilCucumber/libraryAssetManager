@@ -5,15 +5,6 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const prisma = require('./db/prismaClient');
 const { isAuth, isMember } = require('./middleware');
 
-try {
-  const pub = require('./controllers/publicController');
-  console.log('public controller loaded:', Object.keys(pub));
-} catch (err) {
-  console.error('public controller failed to load:', err);
-}
-
-
-
 const app = express();
 require('dotenv').config()
 
