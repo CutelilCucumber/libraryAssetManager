@@ -1,24 +1,32 @@
 # Asset Library Manager
 
-A local asset management tool for organising image files with a tag-based 
-collection system. Built as a portfolio project using Node.js, Express, 
-PostgreSQL, and EJS.
+A local asset management tool for organising, tagging, and browsing image
+files on disk. Built as a portfolio project using Node.js, Express,
+PostgreSQL via Prisma ORM, and EJS templating with Passport.js
+authentication.
 
 ## Features
 
+- User authentication with register, login, and session persistence
+- Role-based access control — Guest, Member, and Admin tiers
 - Browse and search a local image asset library
 - Tag-based filtering with additive AND logic
-- Recursive directory import — folder names become tags automatically
-- Add single assets with manually assigned tags
-- Edit existing assets and their tags
+- Recursive directory import — folder names become flat tags automatically
+- Add and edit single assets with manually assigned tags
 - Delete assets with automatic orphan collection cleanup
+- Promote local assets to a shared public library
+- Assets served directly from disk via Express — files can live anywhere
+  on your machine
 
 ## Tech Stack
 
 - **Backend** — Node.js, Express
-- **Database** — PostgreSQL (via node-postgres)
+- **Database** — PostgreSQL via Prisma ORM
+- **Auth** — Passport.js with passport-local strategy
+- **Sessions** — express-session with prisma-session-store
 - **Templating** — EJS
-- **Styling** — CSS with custom UI components
+- **Validation** — express-validator
+- **Styling** — CSS with custom tag UI components
 
 ## Prerequisites
 
@@ -28,70 +36,83 @@ PostgreSQL, and EJS.
 ## Setup
 
 1. Clone the repository
+
 ```bash
    git clone https://github.com/cutelilcucumber/libraryAssetManager.git
    cd libraryAssetManager
 ```
 
 2. Install dependencies
+
 ```bash
    npm install
 ```
 
 3. Create a `.env` file in the project root
 DATABASE_URL=postgresql://user:password@localhost:5432/asset_library
+SECRET=your_session_secret
 PORT=8000
 
-4. Set up the database
+4. Run Prisma migrations
+
 ```bash
-   psql -U youruser -d asset_library -f db/schema.sql
+   npx prisma migrate dev
 ```
 
 5. Start the server
+
 ```bash
    npm start
 ```
 
    The app will be available at `http://localhost:8000`.
 
-## Database Schema
+## Access Tiers
 
-Three tables drive the data model:
-
-- `assets` — stores file metadata and the absolute path to each file on disk
-- `collections` — stores tag names as a flat namespace
-- `asset_collections` — join table linking assets to their tags
+| Feature | Guest | Member | Admin |
+|---|---|---|---|
+| Browse local library | ✓ | ✓ | ✓ |
+| Directory import | ✓ | ✓ | ✓ |
+| Browse public library | ✗ | ✓ | ✓ |
+| Promote to public | ✗ | ✓ | ✓ |
+| Delete any asset | ✗ | ✗ | ✓ |
 
 ## Importing Assets
 
-Navigate to `/form` and use the directory import form. The populate script 
-recursively walks the provided directory, registers each folder name as a 
-tag, and links every image found to all ancestor folder tags. Re-running 
-against the same directory is safe — existing assets are updated rather 
-than duplicated.
+Navigate to `/local/import` and use the directory import form.
+The populate script recursively walks the provided directory, registers
+each folder name as a flat tag, and links every image to all ancestor
+folder tags. Re-running against the same directory is safe — existing
+assets are updated rather than duplicated.
 
 Supported file types: `.png`, `.jpg`, `.jpeg`, `.webp`
 
-## Usage Notes
-
-This tool is designed to run locally and manages files by their absolute 
-path on disk. Assets are served through an Express route rather than the 
-static middleware, meaning files can live anywhere on your machine outside 
-the project folder.
-
-There is no authentication layer — this is intentional for a local 
-single-user tool and should be addressed before any public deployment.
-
 ## Project Structure
-├── db/
-│   ├── pool.js          — database connection pool
-│   ├── queryDb.js       — all database query functions
-│   ├── populate.js      — recursive directory import script
-│   └── schema.sql       — table definitions and indexes
 ├── controllers/
-│   ├── getLibController.js
-│   └── postLibController.js
+│   ├── localController.js   — local library CRUD and import
+│   └── publicController.js  — public library and promotion
+├── db/
+│   ├── index.js             — barrel file
+│   ├── populateDb.js        — recursive directory import
+│   ├── prismaClient.js      — Prisma client instance
+│   ├── queryDb.js           — asset and collection queries
+│   └── queryUserDb.js       — user queries
+├── lib/
+│   └── passwordUtils.js     — PBKDF2 hash and verify
+├── middleware/
+│   ├── authMiddleware.js    — isAuth, isMember, isAdmin
+│   ├── index.js             — barrel file
+│   └── registerValidation.js
+├── prisma/
+│   └── schema.prisma
+├── public/
+│   └── styles.css
 ├── routes/
+│   ├── localRouter.js
+│   ├── publicRouter.js
+│   └── userRouter.js
+├── utils/
+│   └── filterAssets.js      — shared tag and search filtering
 ├── views/
 │   ├── partials/
 │   │   ├── asset.ejs
@@ -100,12 +121,19 @@ single-user tool and should be addressed before any public deployment.
 │   │   ├── results.ejs
 │   │   ├── search.ejs
 │   │   └── tag.ejs
-│   ├── index.ejs
-│   └── form.ejs
-├── public/
-│   ├── demo             — assets for tabletop game
-│   └── styles.css
+│   ├── assetForm.ejs
+│   ├── local.ejs
+│   ├── public.ejs
+│   └── welcome.ejs
 └── app.js
+
+## Security Notes
+
+- Passwords hashed with PBKDF2 and a random salt via Node's built-in
+  `crypto` module
+- Sessions stored in PostgreSQL via prisma-session-store
+- All registration input validated and sanitized with express-validator
+- Directory import and filepath access gated behind admin role
 
 ## License
 

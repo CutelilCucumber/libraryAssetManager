@@ -12,6 +12,12 @@ async function getUserById(id) {
   });
 }
 
+async function getUserByEmail(email) {
+  return prisma.user.findUnique({
+    where: { email }
+  });
+}
+
 async function createUser(username, email, hash, salt) {
   const user = await prisma.user.create({
     data: { username, email, hash, salt }
@@ -36,6 +42,7 @@ async function addAdmin(id) {
 module.exports = {
     getUserByUsername,
     getUserById,
+    getUserByEmail,
     createUser,
     addMembership,
     addAdmin
